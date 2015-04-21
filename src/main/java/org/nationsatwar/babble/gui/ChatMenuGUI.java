@@ -1,6 +1,5 @@
 package org.nationsatwar.babble.gui;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +16,7 @@ public class ChatMenuGUI extends GuiScreen {
 	private ResourceLocation backgroundimage = new ResourceLocation(Babble.MODID + ":" + 
 			"textures/client/gui/GuiBackground.png");
 	
+	@SuppressWarnings("unused")
 	private EntityPlayer player;
 	private int windowX, windowY, windowWidth, windowHeight;
 	
@@ -109,8 +109,6 @@ public class ChatMenuGUI extends GuiScreen {
 		 */
 		if(!button.isMouseOver())
 			return;
-		
-		EntityPlayerSP playerSP = (EntityPlayerSP) player;
 		
 		// Previous Page
 		if (button.id == 0) {

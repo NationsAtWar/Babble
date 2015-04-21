@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import org.nationsatwar.babble.configuration.ConfigurationHandler;
 import org.nationsatwar.babble.events.ChatEvents;
 import org.nationsatwar.babble.events.KeyEvents;
 import org.nationsatwar.babble.gui.GUIHandler;
@@ -45,6 +46,8 @@ public class Babble {
 		
 		FMLCommonHandler.instance().bus().register(chatHandler);
 		MinecraftForge.EVENT_BUS.register(chatHandler);
+		
+		ConfigurationHandler.reloadConfig(event.getSuggestedConfigurationFile());
 	}
 	
 	@EventHandler

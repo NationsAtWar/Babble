@@ -1,17 +1,12 @@
 package org.nationsatwar.babble.channels;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
-@DatabaseTable(tableName = "channels")
 public class ChannelObject {
-	
-	@DatabaseField(generatedId = true)
-	private int id;
 
-	@DatabaseField
 	private String channelName;
 	
+	private boolean isLocal;
+	private boolean worldOnly;
+
 	public ChannelObject(String channelName) {
 		
 		this.channelName = channelName;
@@ -20,8 +15,20 @@ public class ChannelObject {
 	public String getChannelName() {
 		return channelName;
 	}
-	
-	public void setChannelName(String channelName) {
-		this.channelName = channelName;
+
+	public boolean isLocal() {
+		return isLocal;
+	}
+
+	public void setLocal(boolean isLocal) {
+		this.isLocal = isLocal;
+	}
+
+	public boolean isWorldOnly() {
+		return worldOnly;
+	}
+
+	public void setWorldOnly(boolean worldOnly) {
+		this.worldOnly = worldOnly;
 	}
 }
