@@ -2,16 +2,15 @@ package org.nationsatwar.babble.gui;
 
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.gui.GuiOptionsRowList;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import org.lwjgl.opengl.GL11;
 import org.nationsatwar.babble.Babble;
-import org.nationsatwar.babble.packets.PacketSendChannel;
+import org.nationsatwar.babble.channels.ChannelManager;
+import org.nationsatwar.babble.channels.ChannelObject;
 
 public class ChatMenuGUI extends GuiScreen {
 	
@@ -21,42 +20,47 @@ public class ChatMenuGUI extends GuiScreen {
 	private EntityPlayer player;
 	private int windowX, windowY, windowWidth, windowHeight;
 	
-	public static final int GUI_ID = 20;
+	public static final int GUI_ID = 21;
 	
-	private static final GameSettings.Options[] videoOptions = new GameSettings.Options[] {GameSettings.Options.GRAPHICS, GameSettings.Options.RENDER_DISTANCE, GameSettings.Options.AMBIENT_OCCLUSION, GameSettings.Options.FRAMERATE_LIMIT, GameSettings.Options.ANAGLYPH, GameSettings.Options.VIEW_BOBBING, GameSettings.Options.GUI_SCALE, GameSettings.Options.GAMMA, GameSettings.Options.RENDER_CLOUDS, GameSettings.Options.PARTICLES, GameSettings.Options.USE_FULLSCREEN, GameSettings.Options.ENABLE_VSYNC, GameSettings.Options.MIPMAP_LEVELS, GameSettings.Options.BLOCK_ALTERNATIVES, GameSettings.Options.USE_VBO};
-
-    private GuiListExtended optionsRowList;
+	private int page = 0;
     
 	public ChatMenuGUI(EntityPlayer player, World world, int x, int y, int z) {
 		
 		this.player = player;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		
 		windowWidth = 256;
 		windowHeight = 192;
 		windowX = (width - windowWidth) / 2;
-		windowY = (height - windowHeight) / 2 - 20;
+		windowY = (height - windowHeight) / 2;
 		
 		buttonList.clear();
 		
-		/*
-		for (Channel channel : ChannelManager.channelList) {
+		if (page > 0)
+			buttonList.add(new GuiButton(0, windowX + 10, windowY + windowHeight - 30, 40, 20, "<"));
+		if ((ChannelManager.channelList.size() - 1) / 4 > page)
+			buttonList.add(new GuiButton(1, windowX + windowWidth - 50, windowY + windowHeight - 30, 40, 20, ">"));
+		
+		int channelID = 2;
+		int channelsPerPage = 4;
+		
+		int startIndex = page * channelsPerPage;
+		
+		for (int i = 0; i < channelsPerPage; i++) {
 			
-			
+			if (ChannelManager.channelList.size() > startIndex + i) {
+				
+				ChannelObject channel = ChannelManager.channelList.get(startIndex + i);
+				
+				buttonList.add(new GuiButton(startIndex + channelID, windowX + 10, 
+						windowY + 50 + (i * 25), 
+						120, 20, channel.getChannelName()));
+			} else
+				break;
 		}
-		*/
-		
-		optionsRowList = new GuiOptionsRowList(this.mc, this.width, this.height * 2, 0, this.height, 55, videoOptions);
-		
-		GuiButton buyPlot = new GuiButton(0, windowX + 10, windowY + 30, 120, 20, "Test Channel 12");
-		buttonList.add(buyPlot);
-		
-		GuiButton getDeed = new GuiButton(1, windowX + 10, windowY + 55, 120, 20, "Test Channel 2");
-		buttonList.add(getDeed);
 	}
 	
 	@Override
@@ -66,9 +70,10 @@ public class ChatMenuGUI extends GuiScreen {
 		this.mc.getTextureManager().bindTexture(backgroundimage);
 		drawTexturedModalRect(windowX, windowY, 0, 0, windowWidth,  windowHeight);
 		
-		drawString(fontRendererObj, "Plot Management", windowX + 10, windowY + 10, 0xEE8888);
-		
-        this.optionsRowList.drawScreen(mouseX, mouseY, renderPartialTicks);
+		GL11.glPushMatrix();
+		GL11.glScalef(2.0F, 2.0F, 2.0F);
+		drawString(fontRendererObj, "Channel List", windowX - 30, windowY, 0xEE6688);
+		GL11.glPopMatrix();
 		
 		super.drawScreen(mouseX, mouseY, renderPartialTicks);
 	}
@@ -82,16 +87,17 @@ public class ChatMenuGUI extends GuiScreen {
 	@Override
 	public void actionPerformed(GuiButton button) {
 		
+		System.out.println("Button: " + button.id);
+		
 		EntityPlayerSP playerSP = (EntityPlayerSP) player;
 		
 		if (button.id == 0) {
-			
-			int chunkX = playerSP.chunkCoordX;
-			int chunkZ = playerSP.chunkCoordZ;
-			
-			Babble.playgroundChannel.sendToServer(new PacketSendChannel(playerSP.getName(), chunkX, chunkZ));
+			page -= 1;
+			initGui();
 		}
-		
-		player.closeScreen();
+		if (button.id == 1) {
+			page += 1;
+			initGui();
+		}
 	}
 }

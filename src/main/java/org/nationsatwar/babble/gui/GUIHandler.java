@@ -17,7 +17,7 @@ public class GUIHandler implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
 		
-		if (ID == 20)
+		if (ID == 21)
 			return new ChatMenuGUI(player, world, x, y, z);
 		
 		return null;
