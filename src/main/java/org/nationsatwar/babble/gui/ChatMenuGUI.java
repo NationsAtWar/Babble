@@ -29,8 +29,8 @@ public class ChatMenuGUI extends GuiScreen {
 		this.player = player;
 	}
 	
-	@Override
-	public void initGui() {
+	@SuppressWarnings("unchecked")
+	private void drawButtons() {
 		
 		windowWidth = 256;
 		windowHeight = 192;
@@ -61,6 +61,14 @@ public class ChatMenuGUI extends GuiScreen {
 			} else
 				break;
 		}
+		
+		System.out.println("Page Number: " + page);
+	}
+	
+	@Override
+	public void initGui() {
+		
+		drawButtons();
 	}
 	
 	@Override
@@ -87,17 +95,34 @@ public class ChatMenuGUI extends GuiScreen {
 	@Override
 	public void actionPerformed(GuiButton button) {
 		
-		System.out.println("Button: " + button.id);
+		/*
+		 * I really wish I knew why I needed this part. For whatever reason, when you press the 
+		 * 'Next Page' button when on the first page, you will skip the second page. You can go 
+		 * to the second page from the third page, but that's the only way. This doesn't happen 
+		 * under any other circumstance, no matter what values I give any of these variables.
+		 * 
+		 * If somebody can figure this out, please tell me. I spent so much of my life worrying 
+		 * about this stupid function, I just... I just don't know why... it's not fair. It's not 
+		 * fair that something so arbitrary has ruined my life.
+		 * 
+		 * Fuck you button.isMouseOver() returning false. Fuck you.
+		 */
+		if(!button.isMouseOver())
+			return;
 		
 		EntityPlayerSP playerSP = (EntityPlayerSP) player;
 		
+		// Previous Page
 		if (button.id == 0) {
+			
 			page -= 1;
-			initGui();
+			drawButtons();
 		}
+		// Next Page
 		if (button.id == 1) {
+			
 			page += 1;
-			initGui();
+			drawButtons();
 		}
 	}
 }
