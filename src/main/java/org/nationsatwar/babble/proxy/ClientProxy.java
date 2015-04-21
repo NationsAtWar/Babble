@@ -1,8 +1,6 @@
 package org.nationsatwar.babble.proxy;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 import org.nationsatwar.babble.utility.KeyBindings;

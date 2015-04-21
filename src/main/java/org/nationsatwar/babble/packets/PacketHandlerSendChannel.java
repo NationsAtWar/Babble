@@ -1,8 +1,5 @@
 package org.nationsatwar.babble.packets;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

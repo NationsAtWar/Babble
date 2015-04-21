@@ -22,7 +22,6 @@ import org.nationsatwar.babble.gui.GUIHandler;
 import org.nationsatwar.babble.packets.PacketSendChannel;
 import org.nationsatwar.babble.packets.PacketHandlerSendChannel;
 import org.nationsatwar.babble.proxy.CommonProxy;
-import org.nationsatwar.babble.utility.ChatMessage;
  
 @Mod(modid = Babble.MODID, name = Babble.MODNAME, version = Babble.MODVER)
 public class Babble {
