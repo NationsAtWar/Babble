@@ -24,23 +24,26 @@ public class ConfigurationHandler {
 			configuration = new Configuration(configFile);
 			loadDefaultConfig();
 		}
+
+		configuration = new Configuration(configFile);
 		
 		// Re-populate ChannelManager
 		ChannelManager.clearChannelList();
 		
-		for (String channelName : configuration.getCategoryNames()) {
+		for (String categoryName : configuration.getCategoryNames()) {
 			
-			if (channelName.equals("Settings"))
+			if (categoryName.equals("settings"))
 				continue; // TODO: Make settings - Reserve this category name
 			
+			String channelName = configuration.getString(nameProperty, categoryName, "", "");
+			
 			ChannelObject channel = new ChannelObject(channelName);
-			channel.setLocal(configuration.getBoolean(localProperty, channelName, false, ""));
-			channel.setWorldOnly(configuration.getBoolean(worldOnlyProperty, channelName, false, ""));
-			channel.setOpOnly(configuration.getBoolean(opOnlyProperty, channelName, false, ""));
+			channel.setLocal(configuration.getBoolean(localProperty, categoryName, false, ""));
+			channel.setWorldOnly(configuration.getBoolean(worldOnlyProperty, categoryName, false, ""));
+			channel.setOpOnly(configuration.getBoolean(opOnlyProperty, categoryName, false, ""));
 			
 			ChannelManager.addChannel(channel);
 		}
-		
 	}
 	
 	private static void loadDefaultConfig() {
@@ -53,7 +56,7 @@ public class ConfigurationHandler {
 		
 		// Create default Op channel
 		ChannelObject opChannel = new ChannelObject("Op");
-		localChannel.setOpOnly(true);
+		opChannel.setOpOnly(true);
 		loadChannel(opChannel);
 	}
 	

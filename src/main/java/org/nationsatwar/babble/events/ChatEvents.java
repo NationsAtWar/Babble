@@ -22,9 +22,10 @@ public class ChatEvents {
 		// Disables normal functionality
 		event.setCanceled(true);
 		
-		localChat(event.player, message);
-		
 		NBTTagCompound playerData = event.player.getEntityData();
+
+		System.out.println(playerData.getString("Channel"));
+		System.out.println(playerData.hasKey("Channel"));
 		
 		ChannelObject channel;
 		

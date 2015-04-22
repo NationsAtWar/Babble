@@ -10,13 +10,13 @@ import org.lwjgl.opengl.GL11;
 import org.nationsatwar.babble.Babble;
 import org.nationsatwar.babble.channels.ChannelManager;
 import org.nationsatwar.babble.channels.ChannelObject;
+import org.nationsatwar.babble.packets.PacketSendChannel;
 
 public class ChatMenuGUI extends GuiScreen {
 	
 	private ResourceLocation backgroundimage = new ResourceLocation(Babble.MODID + ":" + 
 			"textures/client/gui/GuiBackground.png");
 	
-	@SuppressWarnings("unused")
 	private EntityPlayer player;
 	private int windowX, windowY, windowWidth, windowHeight;
 	
@@ -55,7 +55,7 @@ public class ChatMenuGUI extends GuiScreen {
 				
 				ChannelObject channel = ChannelManager.getChannel(startIndex + i);
 				
-				buttonList.add(new GuiButton(startIndex + channelID, windowX + 10, 
+				buttonList.add(new GuiButton(startIndex + channelID + i, windowX + 10, 
 						windowY + 50 + (i * 25), 
 						120, 20, channel.getChannelName()));
 			} else
@@ -121,6 +121,15 @@ public class ChatMenuGUI extends GuiScreen {
 			
 			page += 1;
 			drawButtons();
+		}
+		
+		// Channel buttons
+		if (button.id > 1) {
+			
+			ChannelObject channel = ChannelManager.getChannel(button.id - 2);
+			
+			Babble.sendChannel.sendToServer(new PacketSendChannel(player.getUniqueID().toString(), channel.getChannelName()));
+			player.closeScreen();
 		}
 	}
 }
