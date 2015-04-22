@@ -41,7 +41,7 @@ public class ChatMenuGUI extends GuiScreen {
 		
 		if (page > 0)
 			buttonList.add(new GuiButton(0, windowX + 10, windowY + windowHeight - 30, 40, 20, "<"));
-		if ((ChannelManager.channelList.size() - 1) / 4 > page)
+		if ((ChannelManager.getListSize() - 1) / 4 > page)
 			buttonList.add(new GuiButton(1, windowX + windowWidth - 50, windowY + windowHeight - 30, 40, 20, ">"));
 		
 		int channelID = 2;
@@ -51,9 +51,9 @@ public class ChatMenuGUI extends GuiScreen {
 		
 		for (int i = 0; i < channelsPerPage; i++) {
 			
-			if (ChannelManager.channelList.size() > startIndex + i) {
+			if (ChannelManager.getListSize() > startIndex + i) {
 				
-				ChannelObject channel = ChannelManager.channelList.get(startIndex + i);
+				ChannelObject channel = ChannelManager.getChannel(startIndex + i);
 				
 				buttonList.add(new GuiButton(startIndex + channelID, windowX + 10, 
 						windowY + 50 + (i * 25), 

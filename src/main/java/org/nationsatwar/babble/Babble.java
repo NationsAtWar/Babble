@@ -47,7 +47,7 @@ public class Babble {
 		FMLCommonHandler.instance().bus().register(chatHandler);
 		MinecraftForge.EVENT_BUS.register(chatHandler);
 		
-		ConfigurationHandler.reloadConfig(event.getSuggestedConfigurationFile());
+		ConfigurationHandler.loadConfig(event.getSuggestedConfigurationFile());
 	}
 	
 	@EventHandler
