@@ -9,17 +9,19 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import org.nationsatwar.babble.configuration.ConfigurationHandler;
+import org.nationsatwar.babble.events.ChatCommands;
 import org.nationsatwar.babble.events.ChatEvents;
 import org.nationsatwar.babble.events.KeyEvents;
 import org.nationsatwar.babble.gui.GUIHandler;
+import org.nationsatwar.babble.packets.PacketChannel;
 import org.nationsatwar.babble.packets.PacketHandlerReceiveChannel;
 import org.nationsatwar.babble.packets.PacketHandlerSendChannel;
-import org.nationsatwar.babble.packets.PacketChannel;
 import org.nationsatwar.babble.proxy.CommonProxy;
  
 @Mod(modid = Babble.MODID, 
@@ -50,9 +52,11 @@ public class Babble {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		
+		// Register Event Handlers
 		FMLCommonHandler.instance().bus().register(chatHandler);
 		MinecraftForge.EVENT_BUS.register(chatHandler);
 		
+		// Load Configuration
 		ConfigurationHandler.loadConfig(event.getSuggestedConfigurationFile());
 	}
 	
@@ -68,6 +72,7 @@ public class Babble {
 		sendChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
 		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketChannel.class, 1, Side.SERVER);
 		
+		// Handle Client side stuff
 		proxy.registerKeybindings();
 		proxy.registerGuiEvents();
 		FMLCommonHandler.instance().bus().register(new KeyEvents());
@@ -77,5 +82,11 @@ public class Babble {
 	public void postInit(FMLPostInitializationEvent event) {
 		
 		proxy.registerChatOverlay();
+	}
+	
+	@EventHandler
+	public void commandEvent(FMLServerStartingEvent event) {
+		
+		event.registerServerCommand(new ChatCommands());
 	}
 }

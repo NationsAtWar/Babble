@@ -5,16 +5,22 @@ import java.util.List;
 
 public class ChannelManager {
 	
+	// The almighty channel list
 	private static List<ChannelObject> channelList = new ArrayList<ChannelObject>();
+	
+	// Default channel if exists, otherwise first channel in list, otherwise null
 	private static final String defaultChannelName = "Local";
 	
+	// Default local range if one can't be loaded from config
 	private static float localRange = 100;
 	
 	public static float getLocalRange() {
+		
 		return localRange;
 	}
 
 	public static void setLocalRange(float localRange) {
+		
 		ChannelManager.localRange = localRange;
 	}
 
