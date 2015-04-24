@@ -13,6 +13,8 @@ import org.nationsatwar.palette.KeyBindings;
 public class ClientProxy extends CommonProxy {
 	
 	public static KeyBinding chatKey;
+	public static KeyBinding cycleLeftKey;
+	public static KeyBinding cycleRightKey;
 
 	GuiEvents guiHandler = new GuiEvents();
 	
@@ -20,6 +22,8 @@ public class ClientProxy extends CommonProxy {
 	public void registerKeybindings() {
 		
 		chatKey = KeyBindings.registerKey(Keyboard.KEY_C, "chatKey");
+		cycleLeftKey = KeyBindings.registerKey(Keyboard.KEY_LBRACKET, "cycleLeftKey");
+		cycleRightKey = KeyBindings.registerKey(Keyboard.KEY_RBRACKET, "cycleRightKey");
 	}
 	
 	@Override

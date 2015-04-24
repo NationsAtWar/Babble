@@ -64,4 +64,24 @@ public class ChannelManager {
 		
 		return null;
 	}
+	
+	public static ChannelObject getNextChannel(ChannelObject currentChannel) {
+		
+		int channelIndex = channelList.indexOf(currentChannel);
+		
+		if (channelList.size() <= channelIndex + 1)
+			return channelList.get(0);
+		else
+			return channelList.get(channelIndex + 1);
+	}
+	
+	public static ChannelObject getPreviousChannel(ChannelObject currentChannel) {
+		
+		int channelIndex = channelList.indexOf(currentChannel);
+		
+		if (channelIndex <= 0)
+			return channelList.get(channelList.size() - 1);
+		else
+			return channelList.get(channelIndex - 1);
+	}
 }

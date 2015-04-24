@@ -63,10 +63,10 @@ public class Babble {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GUIHandler());
 		
 		// Packet Registration
+		receiveChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
+		receiveChannel.registerMessage(PacketHandlerReceiveChannel.class, PacketChannel.class, 1, Side.CLIENT);
 		sendChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
 		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketChannel.class, 1, Side.SERVER);
-		receiveChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
-		receiveChannel.registerMessage(PacketHandlerReceiveChannel.class, PacketChannel.class, 2, Side.CLIENT);
 		
 		proxy.registerKeybindings();
 		proxy.registerGuiEvents();
