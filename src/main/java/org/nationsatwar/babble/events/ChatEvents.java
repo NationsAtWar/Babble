@@ -7,14 +7,30 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
+import org.nationsatwar.babble.Babble;
 import org.nationsatwar.babble.channels.ChannelManager;
 import org.nationsatwar.babble.channels.ChannelObject;
 import org.nationsatwar.babble.configuration.ConfigurationHandler;
+import org.nationsatwar.babble.packets.PacketChannel;
 import org.nationsatwar.palette.chat.ChatMessage;
 import org.nationsatwar.palette.chat.MessageType;
 
 public class ChatEvents {
+	
+	@SubscribeEvent
+	public void updatePlayerChannel(PlayerLoggedInEvent event) {
+		
+		String channelName = "";
+		
+		if (event.player.getEntityData().hasKey("Channel"))
+			channelName = event.player.getEntityData().getString("Channel");
+		else
+			channelName = ChannelManager.getDefaultChannel().getChannelName();
+		
+		Babble.receiveChannel.sendTo(new PacketChannel(event.player.getUniqueID().toString(), channelName), (EntityPlayerMP) event.player);
+	}
 
 	@SubscribeEvent
 	public void configChangedEvent(OnConfigChangedEvent event) {

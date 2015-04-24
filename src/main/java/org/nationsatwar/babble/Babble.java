@@ -17,8 +17,9 @@ import org.nationsatwar.babble.configuration.ConfigurationHandler;
 import org.nationsatwar.babble.events.ChatEvents;
 import org.nationsatwar.babble.events.KeyEvents;
 import org.nationsatwar.babble.gui.GUIHandler;
+import org.nationsatwar.babble.packets.PacketHandlerReceiveChannel;
 import org.nationsatwar.babble.packets.PacketHandlerSendChannel;
-import org.nationsatwar.babble.packets.PacketSendChannel;
+import org.nationsatwar.babble.packets.PacketChannel;
 import org.nationsatwar.babble.proxy.CommonProxy;
  
 @Mod(modid = Babble.MODID, 
@@ -42,6 +43,7 @@ public class Babble {
 	public static final String SERVER_PROXY_CLASS = "org.nationsatwar.babble.proxy.CommonProxy";
 	
 	public static SimpleNetworkWrapper sendChannel;
+	public static SimpleNetworkWrapper receiveChannel;
 	
 	ChatEvents chatHandler = new ChatEvents();
 	
@@ -57,9 +59,14 @@ public class Babble {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
+		// GUI Handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GUIHandler());
+		
+		// Packet Registration
 		sendChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
-		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketSendChannel.class, 1, Side.SERVER);
+		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketChannel.class, 1, Side.SERVER);
+		receiveChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
+		receiveChannel.registerMessage(PacketHandlerReceiveChannel.class, PacketChannel.class, 2, Side.CLIENT);
 		
 		proxy.registerKeybindings();
 		proxy.registerGuiEvents();
