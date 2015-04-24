@@ -8,6 +8,16 @@ public class ChannelManager {
 	private static List<ChannelObject> channelList = new ArrayList<ChannelObject>();
 	private static final String defaultChannelName = "Local";
 	
+	private static float localRange = 100;
+	
+	public static float getLocalRange() {
+		return localRange;
+	}
+
+	public static void setLocalRange(float localRange) {
+		ChannelManager.localRange = localRange;
+	}
+
 	public static void clearChannelList() {
 		
 		channelList.clear();

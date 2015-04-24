@@ -4,16 +4,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.client.GuiIngameModOptions;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.nationsatwar.babble.channels.ChannelManager;
 import org.nationsatwar.babble.channels.ChannelObject;
 import org.nationsatwar.babble.configuration.ConfigurationHandler;
-import org.nationsatwar.babble.gui.ChatConfig;
 import org.nationsatwar.palette.chat.ChatMessage;
 import org.nationsatwar.palette.chat.MessageType;
 
@@ -27,17 +24,15 @@ public class ChatEvents {
 	}
 	
 	@SubscribeEvent
-	public void openModOptionsEvent(GuiOpenEvent event) {
-		
-		if (event.gui instanceof GuiIngameModOptions)
-			event.gui = new ChatConfig(null);
-	}
-	
-	@SubscribeEvent
 	public void chatMessage(ServerChatEvent event) {
 		
+		String message = "";
+		
 		// Formats the message
-		String message = ChatMessage.formatMessage(event.username, event.message, MessageType.NORMAL);
+		if (isPlayerOp(event.player))
+			message = ChatMessage.formatMessage(event.username, event.message, MessageType.ADMIN);
+		else
+			message = ChatMessage.formatMessage(event.username, event.message, MessageType.NORMAL);
 		
 		// Disables normal functionality
 		event.setCanceled(true);
@@ -98,7 +93,9 @@ public class ChatEvents {
 			else
 				continue;
 			
-			if (sender.getPositionVector().distanceTo(listener.getPositionVector()) < 100f)
+			System.out.println(ChannelManager.getLocalRange());
+			
+			if (sender.getPositionVector().distanceTo(listener.getPositionVector()) < ChannelManager.getLocalRange())
 				ChatMessage.sendMessage(listener, message);
 		}
 	}
@@ -150,11 +147,25 @@ public class ChatEvents {
 		ChatMessage.sendMessage(sender, message);
 		
 		for (Object playerEntity : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-				
+			
 			EntityPlayerMP listener = (EntityPlayerMP) playerEntity;
 			
-			if (!listener.equals(sender))
+			if (listener.equals(sender))
+				continue;
+			
+			if (isPlayerOp(listener))
 				ChatMessage.sendMessage(listener, message);
 		}
+	}
+	
+	private static boolean isPlayerOp(EntityPlayerMP player) {
+		
+		System.out.println(player.getName() + " " + MinecraftServer.getServer().getConfigurationManager().canSendCommands(player.getGameProfile()));
+		
+		for (String opName : MinecraftServer.getServer().getConfigurationManager().getOppedPlayerNames())
+			if (player.getName().equals(opName))
+				return true;
+		
+		return false;
 	}
 }

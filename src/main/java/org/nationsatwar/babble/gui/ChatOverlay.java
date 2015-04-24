@@ -1,17 +1,18 @@
 package org.nationsatwar.babble.gui;
 
-import org.nationsatwar.babble.channels.ChannelManager;
-import org.nationsatwar.babble.channels.ChannelObject;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ChatOverlay extends Gui {
+import org.nationsatwar.babble.channels.ChannelManager;
+import org.nationsatwar.babble.channels.ChannelObject;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
+
+public class ChatOverlay extends GuiChat {
 	
 	private Minecraft mc;
 	private boolean channelSet = false;
@@ -23,7 +24,7 @@ public class ChatOverlay extends Gui {
 		// We need this to invoke the render engine.
 		this.mc = mc;
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void eventHandler(RenderGameOverlayEvent event) {
 		
@@ -50,6 +51,9 @@ public class ChatOverlay extends Gui {
 		
 		// Displays active channel name above chat bar
 		if (mc.currentScreen != null && mc.currentScreen.getClass() == GuiChat.class)
-			drawString(mc.fontRendererObj, channel.getChannelColor() + "(" + channelName + ")", 2, mc.currentScreen.height - 25, 0xEE6688);
+			drawString(mc.fontRendererObj, channel.getChannelColor() + "(" + channelName + ")" + ChatFormatting.WHITE, 2, mc.currentScreen.height - 25, 0xEE6688);
+		
+		// Resets the renderer to its normal overlay texture (Drawing strings changes it)
+		mc.getTextureManager().bindTexture(icons);
 	}
 }

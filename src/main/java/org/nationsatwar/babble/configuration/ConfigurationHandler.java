@@ -14,13 +14,17 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 public class ConfigurationHandler {
 	
 	public static Configuration configuration;
+
+	private static final String settingsCategory = "settings";
 	
-	private static final String nameProperty = "channelName";
-	private static final String colorProperty = "channelColor";
-	private static final String localProperty = "isLocal";
-	private static final String globalProperty = "isGlobal";
-	private static final String worldOnlyProperty = "worldOnly";
-	private static final String opOnlyProperty = "opOnly";
+	private static final String localRangeProperty = "Local Range";
+	
+	private static final String nameProperty = "Channel Name";
+	private static final String colorProperty = "Channel Color";
+	private static final String localProperty = "Local";
+	private static final String globalProperty = "Global";
+	private static final String worldOnlyProperty = "World Only";
+	private static final String opOnlyProperty = "Op Only";
 	
 	public static void loadConfig(File configFile) {
 		
@@ -36,15 +40,19 @@ public class ConfigurationHandler {
 		// Re-populate ChannelManager
 		ChannelManager.clearChannelList();
 		
+		// Load settings into mod
+		ChannelManager.setLocalRange(configuration.getFloat(localRangeProperty, settingsCategory, 
+				100, 0, 100000, "How far listeners can hear when in a local channel."));
+		
 		for (String categoryName : configuration.getCategoryNames()) {
 			
-			if (categoryName.equals("settings"))
+			if (categoryName.equals(settingsCategory))
 				continue; // TODO: Make settings - Reserve this category name
 			
-			String channelName = configuration.getString(nameProperty, categoryName, "", "");
+			String channelName = configuration.getString(nameProperty, categoryName, "(Insert New Channel)", "");
 			
 			ChannelObject channel = new ChannelObject(channelName);
-			channel.setChannelColor(ChatFormatting.getByName(configuration.getString(colorProperty, categoryName, "", "")));
+			channel.setChannelColor(ChatFormatting.getByName(configuration.getString(colorProperty, categoryName, "white", "")));
 			channel.setLocal(configuration.getBoolean(localProperty, categoryName, false, ""));
 			channel.setWorldOnly(configuration.getBoolean(worldOnlyProperty, categoryName, false, ""));
 			channel.setGlobal(configuration.getBoolean(globalProperty, categoryName, false, ""));
@@ -52,6 +60,8 @@ public class ConfigurationHandler {
 			
 			ChannelManager.addChannel(channel);
 		}
+		
+		configuration.save();
 	}
 	
 	public static List<String> getChannelNames() {
@@ -111,7 +121,8 @@ public class ConfigurationHandler {
 
 		try {
 			
-			configuration.get(channel.getChannelName(), nameProperty, channel.getChannelName());
+			configuration.get(channel.getChannelName(), nameProperty, channel.getChannelName(), 
+					"Name of the channel to be displayed.");
 			configuration.get(channel.getChannelName(), colorProperty, channel.getChannelColor().getName(), 
 					"The color of the channel name when displayed.");
 			configuration.get(channel.getChannelName(), localProperty, channel.isLocal(), 

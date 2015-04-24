@@ -32,17 +32,17 @@ public class ChatMenuGUI extends GuiScreen {
 	@SuppressWarnings("unchecked")
 	private void drawButtons() {
 		
-		windowWidth = 256;
-		windowHeight = 192;
-		windowX = (width - windowWidth) / 2;
-		windowY = (height - windowHeight) / 2;
+		windowWidth = 140;
+		windowHeight = 180;
+		windowX = 20;
+		windowY = 20;
 		
 		buttonList.clear();
 		
 		if (page > 0)
-			buttonList.add(new GuiButton(0, windowX + 10, windowY + windowHeight - 30, 40, 20, "<"));
+			buttonList.add(new GuiButton(0, windowX + 10, windowY + windowHeight - 30, 20, 20, "<"));
 		if ((ChannelManager.getListSize() - 1) / 4 > page)
-			buttonList.add(new GuiButton(1, windowX + windowWidth - 50, windowY + windowHeight - 30, 40, 20, ">"));
+			buttonList.add(new GuiButton(1, windowX + windowWidth - 30, windowY + windowHeight - 30, 20, 20, ">"));
 		
 		int channelID = 2;
 		int channelsPerPage = 4;
@@ -55,14 +55,12 @@ public class ChatMenuGUI extends GuiScreen {
 				
 				ChannelObject channel = ChannelManager.getChannel(startIndex + i);
 				
-				buttonList.add(new GuiButton(startIndex + channelID + i, windowX + 10, 
+				buttonList.add(new GuiButton(startIndex + channelID + i, windowX + 20, 
 						windowY + 50 + (i * 25), 
-						120, 20, channel.getChannelName()));
+						100, 20, channel.getChannelName()));
 			} else
 				break;
 		}
-		
-		System.out.println("Page Number: " + page);
 	}
 	
 	@Override
@@ -78,10 +76,16 @@ public class ChatMenuGUI extends GuiScreen {
 		this.mc.getTextureManager().bindTexture(backgroundimage);
 		drawTexturedModalRect(windowX, windowY, 0, 0, windowWidth,  windowHeight);
 		
+		float fontScale = 2.0f;
+		
+		fontRendererObj.setUnicodeFlag(true);
+
 		GL11.glPushMatrix();
-		GL11.glScalef(2.0F, 2.0F, 2.0F);
-		drawString(fontRendererObj, "Channel List", windowX - 30, windowY, 0xEE6688);
+		GL11.glScaled(fontScale, fontScale, fontScale);
+		drawString(fontRendererObj, "Channel List", (windowX + 25) / (int) fontScale, (windowY + 20) / (int) fontScale, 0xCC0000);
 		GL11.glPopMatrix();
+		
+		fontRendererObj.setUnicodeFlag(false);
 		
 		super.drawScreen(mouseX, mouseY, renderPartialTicks);
 	}

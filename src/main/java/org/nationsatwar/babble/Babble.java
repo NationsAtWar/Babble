@@ -1,6 +1,5 @@
 package org.nationsatwar.babble;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +16,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.nationsatwar.babble.configuration.ConfigurationHandler;
 import org.nationsatwar.babble.events.ChatEvents;
 import org.nationsatwar.babble.events.KeyEvents;
-import org.nationsatwar.babble.gui.ChatOverlay;
 import org.nationsatwar.babble.gui.GUIHandler;
 import org.nationsatwar.babble.packets.PacketHandlerSendChannel;
 import org.nationsatwar.babble.packets.PacketSendChannel;
@@ -64,12 +62,13 @@ public class Babble {
 		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketSendChannel.class, 1, Side.SERVER);
 		
 		proxy.registerKeybindings();
+		proxy.registerGuiEvents();
 		FMLCommonHandler.instance().bus().register(new KeyEvents());
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		
-		MinecraftForge.EVENT_BUS.register(new ChatOverlay(Minecraft.getMinecraft()));
+		proxy.registerChatOverlay();
 	}
 }
