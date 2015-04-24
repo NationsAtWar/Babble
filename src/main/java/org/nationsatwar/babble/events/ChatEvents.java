@@ -2,16 +2,36 @@ package org.nationsatwar.babble.events;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.fml.client.GuiIngameModOptions;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.nationsatwar.babble.channels.ChannelManager;
 import org.nationsatwar.babble.channels.ChannelObject;
+import org.nationsatwar.babble.configuration.ConfigurationHandler;
+import org.nationsatwar.babble.gui.ChatConfig;
 import org.nationsatwar.palette.chat.ChatMessage;
 import org.nationsatwar.palette.chat.MessageType;
 
 public class ChatEvents {
+
+	@SubscribeEvent
+	public void configChangedEvent(OnConfigChangedEvent event) {
+		
+		ConfigurationHandler.saveConfig();
+		
+	}
+	
+	@SubscribeEvent
+	public void openModOptionsEvent(GuiOpenEvent event) {
+		
+		if (event.gui instanceof GuiIngameModOptions)
+			event.gui = new ChatConfig(null);
+	}
 	
 	@SubscribeEvent
 	public void chatMessage(ServerChatEvent event) {
@@ -22,35 +42,51 @@ public class ChatEvents {
 		// Disables normal functionality
 		event.setCanceled(true);
 		
+		// Gets the player's active channel
 		NBTTagCompound playerData = event.player.getEntityData();
-
-		System.out.println(playerData.getString("Channel"));
-		System.out.println(playerData.hasKey("Channel"));
-		
-		ChannelObject channel;
+		ChannelObject channel = null;
 		
 		if (playerData.hasKey("Channel"))
 			channel = ChannelManager.getChannel(playerData.getString("Channel"));
-		else
-			return;
+		else {
+			channel = ChannelManager.getDefaultChannel();
+			playerData.setString("Channel", channel.getChannelName());
+		}
 		
-		if (channel == null)
-			return;
-		
-		if (channel.isLocal())
-			localChat(event.player, message);
-	}
-	
-	@SubscribeEvent
-	public void constructEntity(EntityEvent.EntityConstructing event) {
-		
-		if (event.entity instanceof EntityPlayerMP) {
+		// Only called if something horrible happened
+		if (channel == null) {
 			
-			// TODO: Register default channel
+			System.out.println("Error: Sender's channel returned null");
+			event.setCanceled(false);
 			return;
 		}
+		
+		// Appends channel name to message
+		message = channel.getChannelColor() + "(" + channel.getChannelName() + ") " + message;
+		
+		// Local Chat functionality
+		if (channel.isLocal())
+			localChat(event.player, message);
+		
+		// World Chat functionality
+		else if (channel.isWorldOnly())
+			worldChat(event.player, message);
+		
+		// Global Chat functionality
+		else if (channel.isGlobal())
+			globalChat(event.player, message);
+		
+		// Op Chat functionality
+		else if (channel.isOpOnly())
+			opChat(event.player, message);
 	}
 	
+	/**
+	 * Local Chat functionality
+	 * 
+	 * @param sender The speaker
+	 * @param message The final message
+	 */
 	private void localChat(EntityPlayerMP sender, String message) {
 		
 		for (Object playerEntity : sender.worldObj.playerEntities) {
@@ -62,13 +98,62 @@ public class ChatEvents {
 			else
 				continue;
 			
-			if (sender.equals(listener)) {
+			if (sender.getPositionVector().distanceTo(listener.getPositionVector()) < 100f)
+				ChatMessage.sendMessage(listener, message);
+		}
+	}
+	
+	/**
+	 * World Chat functionality
+	 * 
+	 * @param sender The speaker
+	 * @param message The final message
+	 */
+	private void worldChat(EntityPlayerMP sender, String message) {
+		
+		for (Object playerEntity : sender.worldObj.playerEntities) {
+			
+			EntityPlayerMP listener = (EntityPlayerMP) playerEntity;
+			ChatMessage.sendMessage(listener, message);
+		}
+	}
+	
+	/**
+	 * Global Chat functionality
+	 * 
+	 * @param sender The speaker
+	 * @param message The final message
+	 */
+	private void globalChat(EntityPlayerMP sender, String message) {
+		
+		for (WorldServer worldServer : MinecraftServer.getServer().worldServers) {
+			
+			for (Object playerEntity : worldServer.playerEntities) {
+				
+				EntityPlayerMP listener = (EntityPlayerMP) playerEntity;
+				
+				System.out.println(listener.getName());
 				
 				ChatMessage.sendMessage(listener, message);
-				continue;
 			}
+		}
+	}
+	
+	/**
+	 * Op Chat functionality
+	 * 
+	 * @param sender The speaker
+	 * @param message The final message
+	 */
+	private void opChat(EntityPlayerMP sender, String message) {
+		
+		ChatMessage.sendMessage(sender, message);
+		
+		for (Object playerEntity : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+				
+			EntityPlayerMP listener = (EntityPlayerMP) playerEntity;
 			
-			if (sender.getPositionVector().distanceTo(listener.getPositionVector()) < 100f)
+			if (!listener.equals(sender))
 				ChatMessage.sendMessage(listener, message);
 		}
 	}

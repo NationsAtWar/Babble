@@ -6,6 +6,7 @@ import java.util.List;
 public class ChannelManager {
 	
 	private static List<ChannelObject> channelList = new ArrayList<ChannelObject>();
+	private static final String defaultChannelName = "Local";
 	
 	public static void clearChannelList() {
 		
@@ -40,5 +41,17 @@ public class ChannelManager {
 	public static int getListSize() {
 		
 		return channelList.size();
+	}
+	
+	public static ChannelObject getDefaultChannel() {
+		
+		for (ChannelObject channel : channelList)
+			if (channel.getChannelName().equals(defaultChannelName))
+				return channel;
+		
+		if (channelList.size() > 1)
+			return channelList.get(0);
+		
+		return null;
 	}
 }

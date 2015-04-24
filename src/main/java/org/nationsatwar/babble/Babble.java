@@ -1,5 +1,6 @@
 package org.nationsatwar.babble;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -16,12 +17,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.nationsatwar.babble.configuration.ConfigurationHandler;
 import org.nationsatwar.babble.events.ChatEvents;
 import org.nationsatwar.babble.events.KeyEvents;
+import org.nationsatwar.babble.gui.ChatOverlay;
 import org.nationsatwar.babble.gui.GUIHandler;
 import org.nationsatwar.babble.packets.PacketHandlerSendChannel;
 import org.nationsatwar.babble.packets.PacketSendChannel;
 import org.nationsatwar.babble.proxy.CommonProxy;
  
-@Mod(modid = Babble.MODID, name = Babble.MODNAME, version = Babble.MODVER)
+@Mod(modid = Babble.MODID, 
+	name = Babble.MODNAME, 
+	version = Babble.MODVER, 
+	guiFactory = Babble.GUI_FACTORY_CLASS)
 public class Babble {
 
     @Instance(Babble.MODID)
@@ -33,7 +38,8 @@ public class Babble {
 	public static final String MODID = "babble";
 	public static final String MODNAME = "Babble";
 	public static final String MODVER = "0.0.1";
-	
+
+	public static final String GUI_FACTORY_CLASS = "org.nationsatwar.babble.gui.GUIFactory";
 	public static final String CLIENT_PROXY_CLASS = "org.nationsatwar.babble.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "org.nationsatwar.babble.proxy.CommonProxy";
 	
@@ -64,6 +70,6 @@ public class Babble {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		
-		
+		MinecraftForge.EVENT_BUS.register(new ChatOverlay(Minecraft.getMinecraft()));
 	}
 }
