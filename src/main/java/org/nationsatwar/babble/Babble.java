@@ -44,8 +44,7 @@ public class Babble {
 	public static final String CLIENT_PROXY_CLASS = "org.nationsatwar.babble.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "org.nationsatwar.babble.proxy.CommonProxy";
 	
-	public static SimpleNetworkWrapper sendChannel;
-	public static SimpleNetworkWrapper receiveChannel;
+	public static SimpleNetworkWrapper channel;
 	
 	ChatEvents chatHandler = new ChatEvents();
 	
@@ -58,6 +57,11 @@ public class Babble {
 		
 		// Load Configuration
 		ConfigurationHandler.loadConfig(event.getSuggestedConfigurationFile());
+		
+		// Packet Registration
+		channel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
+		channel.registerMessage(PacketHandlerReceiveChannel.class, PacketChannel.class, 1, Side.CLIENT);
+		channel.registerMessage(PacketHandlerSendChannel.class, PacketChannel.class, 1, Side.SERVER);
 	}
 	
 	@EventHandler
@@ -65,12 +69,6 @@ public class Babble {
 		
 		// GUI Handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GUIHandler());
-		
-		// Packet Registration
-		receiveChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
-		receiveChannel.registerMessage(PacketHandlerReceiveChannel.class, PacketChannel.class, 1, Side.CLIENT);
-		sendChannel = NetworkRegistry.INSTANCE.newSimpleChannel(Babble.MODID);
-		sendChannel.registerMessage(PacketHandlerSendChannel.class, PacketChannel.class, 1, Side.SERVER);
 		
 		// Handle Client side stuff
 		proxy.registerKeybindings();

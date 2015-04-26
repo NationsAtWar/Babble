@@ -133,7 +133,7 @@ public class ChatMenuGUI extends GuiScreen {
 			ChannelObject channel = ChannelManager.getChannel(button.id - 2);
 			
 			player.getEntityData().setString("Channel", channel.getChannelName());
-			Babble.sendChannel.sendToServer(new PacketChannel(player.getUniqueID().toString(), channel.getChannelName()));
+			Babble.channel.sendToServer(new PacketChannel(player.getUniqueID().toString(), channel.getChannelName()));
 			player.closeScreen();
 		}
 	}

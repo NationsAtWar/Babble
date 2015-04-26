@@ -29,7 +29,7 @@ public class ChatEvents {
 		else
 			channelName = ChannelManager.getDefaultChannel().getChannelName();
 		
-		Babble.receiveChannel.sendTo(new PacketChannel(event.player.getUniqueID().toString(), channelName), (EntityPlayerMP) event.player);
+		Babble.channel.sendTo(new PacketChannel(event.player.getUniqueID().toString(), channelName), (EntityPlayerMP) event.player);
 	}
 
 	@SubscribeEvent
@@ -109,8 +109,6 @@ public class ChatEvents {
 			else
 				continue;
 			
-			System.out.println(ChannelManager.getLocalRange());
-			
 			if (sender.getPositionVector().distanceTo(listener.getPositionVector()) < ChannelManager.getLocalRange())
 				ChatMessage.sendMessage(listener, message);
 		}
@@ -145,8 +143,6 @@ public class ChatEvents {
 				
 				EntityPlayerMP listener = (EntityPlayerMP) playerEntity;
 				
-				System.out.println(listener.getName());
-				
 				ChatMessage.sendMessage(listener, message);
 			}
 		}
@@ -175,8 +171,6 @@ public class ChatEvents {
 	}
 	
 	private static boolean isPlayerOp(EntityPlayerMP player) {
-		
-		System.out.println(player.getName() + " " + MinecraftServer.getServer().getConfigurationManager().canSendCommands(player.getGameProfile()));
 		
 		for (String opName : MinecraftServer.getServer().getConfigurationManager().getOppedPlayerNames())
 			if (player.getName().equals(opName))

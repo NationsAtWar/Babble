@@ -43,7 +43,7 @@ public class ChannelManager {
 	public static ChannelObject getChannel(String channelName) {
 		
 		for (ChannelObject channel : channelList)
-			if (channel.getChannelName().equals(channelName))
+			if (channel.getChannelName().equalsIgnoreCase(channelName))
 				return channel;
 		
 		return null;
@@ -89,5 +89,24 @@ public class ChannelManager {
 			return channelList.get(channelList.size() - 1);
 		else
 			return channelList.get(channelIndex - 1);
+	}
+	
+	public static List<String> getChannelNames() {
+		
+		List<String> channelNames = new ArrayList<String>();
+		
+		for (ChannelObject channel : channelList)
+			channelNames.add(channel.getChannelName());
+		
+		return channelNames;
+	}
+	
+	public static boolean channelExist(String channelName) {
+		
+		for (String channelInList : getChannelNames())
+			if (channelInList.equalsIgnoreCase(channelName))
+				return true;
+		
+		return false;
 	}
 }

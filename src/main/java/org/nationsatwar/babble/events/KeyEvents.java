@@ -45,7 +45,7 @@ public class KeyEvents {
 			
 			playerData.setString("Channel", newChannelName);
 			
-			Babble.sendChannel.sendToServer(new PacketChannel(player.getUniqueID().toString(), newChannelName));
+			Babble.channel.sendToServer(new PacketChannel(player.getUniqueID().toString(), newChannelName));
 		}
 	}
 }
