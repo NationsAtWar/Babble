@@ -47,7 +47,7 @@ public class ConfigurationHandler {
 		for (String categoryName : configuration.getCategoryNames()) {
 			
 			if (categoryName.equals(settingsCategory))
-				continue; // TODO: Make settings - Reserve this category name
+				continue;
 			
 			String channelName = configuration.getString(nameProperty, categoryName, "(Insert New Channel)", "");
 			
